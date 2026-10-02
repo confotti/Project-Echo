@@ -12,9 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private bool dashing = false;
     private float dashSpeed = 20f;
     private float dashDecaySpeed = 64f;
-
-    private bool attacking = false;
-    public GameObject sword; 
+    public ParticleSystem dashEffect; 
 
     private void Start()
     {
@@ -33,14 +31,7 @@ public class PlayerMovement : MonoBehaviour
             dashing = true;
 
             rb.linearVelocity = transform.forward.normalized * dashSpeed;
-        }
-    }
-
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (context.started && !dashing)
-        {
-            attacking = true;
+            dashEffect.Play(); 
         }
     }
 
