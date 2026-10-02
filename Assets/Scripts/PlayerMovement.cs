@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
     private float dashSpeed = 20f;
     private float dashDecaySpeed = 64f;
 
+    private bool attacking = false;
+    public GameObject sword; 
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -30,6 +33,14 @@ public class PlayerMovement : MonoBehaviour
             dashing = true;
 
             rb.linearVelocity = transform.forward.normalized * dashSpeed;
+        }
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.started && !dashing)
+        {
+            attacking = true;
         }
     }
 
