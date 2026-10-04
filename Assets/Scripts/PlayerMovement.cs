@@ -5,18 +5,25 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public Camera mainCamera;
+    public LayerMask groundLayer; 
+
     public float speed;
     private Vector2 move;
     public Rigidbody rb;
+    public Animator animator; 
 
     private bool dashing = false;
-    private float dashSpeed = 20f;
+    private float dashSpeed = 40f;
     private float dashDecaySpeed = 64f;
-    public ParticleSystem dashEffect; 
+    public ParticleSystem dashEffect;
+
+    private bool attacking = false;
+    private float attackMoveSpeed = 2f; 
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -26,28 +33,53 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        if (context.started && !dashing)
+        if (context.started && !dashing && move.sqrMagnitude > 0.01f)
         {
             dashing = true;
 
-            rb.linearVelocity = transform.forward.normalized * dashSpeed;
-            dashEffect.Play(); 
-        }
-    }
+            Vector3 dashDirection = new Vector3(move.x, 0f, move.y).normalized;
 
-    private void FixedUpdate()
+            rb.linearVelocity = dashDirection * dashSpeed;
+            dashEffect.Play();
+        }
+    } 
+
+    public void OnAttack(InputAction.CallbackContext context)
     {
+        if (context.started)
+        {
+            animator.SetTrigger("Attacking");
+            rb.linearVelocity = transform.forward * attackMoveSpeed;
+        }
+    } 
+
+    private void Update()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()); 
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
+        {
+            Vector3 direction = hit.point - transform.position;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                transform.rotation = Quaternion.LookRotation(direction);
+            }
+        }
+
         movePlayer();
         dashPlayer();
     }
 
     public void movePlayer()
     {
-        Vector3 movement = new Vector3(move.x, 0f, move.y);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15f);
+        if (attacking)
+            return; 
 
-        transform.Translate(movement * speed * Time.deltaTime, Space.World);
-    }
+        Vector3 movement = new Vector3(move.x, 0f, move.y);
+        transform.Translate(movement * speed * Time.deltaTime, Space.World); 
+    } 
 
     public void dashPlayer()
     {
