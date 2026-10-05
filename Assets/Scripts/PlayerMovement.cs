@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     private Vector2 move;
     public Rigidbody rb;
-    public Animator animator; 
+    public Animator animator;
 
     private bool dashing = false;
     private float dashSpeed = 40f;
@@ -33,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
+        if (!enabled) return;
+
         if (context.started && !dashing && move.sqrMagnitude > 0.01f)
         {
             dashing = true;
@@ -46,6 +48,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if (!enabled) return;
+
         if (context.started)
         {
             animator.SetTrigger("Attacking");
@@ -78,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
             return; 
 
         Vector3 movement = new Vector3(move.x, 0f, move.y);
-        transform.Translate(movement * speed * Time.deltaTime, Space.World); 
+        transform.Translate(movement * speed * Time.deltaTime, Space.World);
     } 
 
     public void dashPlayer()
@@ -86,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
         if (dashing)
         {
             rb.linearVelocity = Vector3.MoveTowards(rb.linearVelocity, Vector3.zero, dashDecaySpeed * Time.fixedDeltaTime);
+
 
             if (rb.linearVelocity.sqrMagnitude < 1f)
             {
