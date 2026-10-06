@@ -364,7 +364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2766561642759320085, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2874281362908042947, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
       propertyPath: mainCamera
@@ -410,8 +410,17 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7923757635190319735, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8298594634053693680, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
+      propertyPath: m_Intensity
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 925255479381763398, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
+    - {fileID: 7607323484358973603, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1327,7 +1336,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 209.25436, y: 5, z: 138.60081}
+  m_Size: {x: 500, y: 5, z: 500}
   m_Center: {x: -69.18728, y: 0, z: 22.79228}
 --- !u!4 &1026561186
 Transform:
@@ -31723,6 +31732,10 @@ PrefabInstance:
       propertyPath: clone
       value: 
       objectReference: {fileID: 551226821}
+    - target: {fileID: 8298594634053693680, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
+      propertyPath: m_Intensity
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 925255479381763398, guid: 0334d7efdd818044fa09cfeb87ead026, type: 3}
     m_RemovedGameObjects: []
