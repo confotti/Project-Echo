@@ -1,9 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class CloneObject : MonoBehaviour
 {
     public List<CloneFrame> recording = new List<CloneFrame>();
+
+    public GameObject SwordCollider;
+    public Volume volume;
+    public CameraFollow cameraFollow;
+    private Transform ogCameraTarget;
 
     private bool isRecording;
     private bool isReplaying;
@@ -16,6 +23,7 @@ public class CloneObject : MonoBehaviour
     private void Awake()
     {
         cloneMovement = GetComponent<PlayerMovement>();
+        ogCameraTarget = cameraFollow.target;
     }
 
     public void StartRecording()
@@ -25,11 +33,21 @@ public class CloneObject : MonoBehaviour
 
         isRecording = true;
         isReplaying = false;
+
+        SwordCollider.layer = 6;
+        volume.profile.TryGet(out ColorAdjustments CA);
+        CA.active = true;
+        cameraFollow.target = transform;
     }
 
     public void StopRecording()
     {
         isRecording = false;
+
+        volume.profile.TryGet(out ColorAdjustments CA);
+        CA.active = false;
+
+        cameraFollow.target = ogCameraTarget;
     }
 
     public void StartReplay()
@@ -37,6 +55,8 @@ public class CloneObject : MonoBehaviour
         isReplaying = true;
         replayIndex = 0;
         recordingTime = 0f;
+
+        SwordCollider.layer = 0;
     }
 
     private void Update()
