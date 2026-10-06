@@ -1,17 +1,31 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
-public class HitEnemy : MonoBehaviour
+public class BossBehaviour : MonoBehaviour
 {
+    public Transform player;
+    public float health;
+    public float damagePerHit;
+    private float currentHealth; 
+
     public Material hitMaterial;
     public GameObject enemy;
-    public ParticleSystem hitEffect; 
 
     private Material originalMaterial;
+    public ParticleSystem deathvfx; 
 
     private void Start()
     {
         originalMaterial = enemy.GetComponent<MeshRenderer>().material;
+        currentHealth = health; 
+    }
+
+    void Update()
+    {
+        if (player != null)
+        {
+            transform.LookAt(player);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -19,7 +33,7 @@ public class HitEnemy : MonoBehaviour
         if (other.CompareTag("Sword"))
         {
             enemy.GetComponent<MeshRenderer>().material = hitMaterial;
-            hitEffect.Play(); 
+            TakeDamage(); 
             StartCoroutine(HitDuration());
             Debug.Log("Player hit");
         }
@@ -31,4 +45,14 @@ public class HitEnemy : MonoBehaviour
 
         enemy.GetComponent<MeshRenderer>().material = originalMaterial;
     }
-} 
+
+    private void TakeDamage()
+    {
+        currentHealth -= damagePerHit;
+        if (currentHealth <= 0)
+        {
+            deathvfx.Play(); 
+            Destroy(enemy); 
+        }
+    }
+}
