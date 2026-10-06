@@ -35,6 +35,7 @@ public class CloneObject : MonoBehaviour
         isReplaying = false;
 
         SwordCollider.layer = 6;
+        SwordCollider.tag = "Untagged"; 
         volume.profile.TryGet(out ColorAdjustments CA);
         CA.active = true;
         cameraFollow.target = transform;
@@ -57,6 +58,7 @@ public class CloneObject : MonoBehaviour
         recordingTime = 0f;
 
         SwordCollider.layer = 0;
+        SwordCollider.tag = "Sword";
     }
 
     private void Update()

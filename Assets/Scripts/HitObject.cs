@@ -27,7 +27,7 @@ public class HitObject : MonoBehaviour
 
     IEnumerator HitDuration()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
 
         isHit = false;
         button.GetComponent<MeshRenderer>().material = originalMaterial;
