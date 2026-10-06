@@ -11,6 +11,13 @@ public class CloneObject : MonoBehaviour
     private float recordingTime;
     private int replayIndex;
 
+    private PlayerMovement cloneMovement;
+
+    private void Awake()
+    {
+        cloneMovement = GetComponent<PlayerMovement>();
+    }
+
     public void StartRecording()
     {
         recording.Clear();
@@ -34,21 +41,29 @@ public class CloneObject : MonoBehaviour
 
     private void Update()
     {
-        if (isRecording)
-        {
-            recordingTime += Time.unscaledDeltaTime;
-
-            recording.Add(new CloneFrame(
-                transform.position,
-                transform.rotation,
-                recordingTime
-            ));
-        }
-
         if (isReplaying)
         {
             ReplayRecording();
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (isRecording)
+        {
+            recordingTime += Time.deltaTime;
+
+            recording.Add(new CloneFrame(
+                transform.position,
+                transform.rotation,
+                recordingTime,
+                cloneMovement.attackFrame,
+                cloneMovement.dashFrame
+            ));
+        }
+
+        cloneMovement.attackFrame = false;
+        cloneMovement.dashFrame = false;
     }
 
     private void ReplayRecording()
@@ -78,6 +93,22 @@ public class CloneObject : MonoBehaviour
         transform.position = Vector3.Lerp(a.position, b.position, t);
         transform.rotation = Quaternion.Slerp(a.rotation, b.rotation, t);
 
+        //Lite hemskt, men det får va så nu, om det funkar
+        if (a.attacked || b.attacked)
+        {
+            cloneMovement.Attack();
+            recording[replayIndex] = new CloneFrame(a.position, a.rotation, a.time, false, a.dashed);
+            recording[replayIndex+1] = new CloneFrame(b.position, b.rotation, b.time, false, b.dashed);
+        }
+
+        if (a.dashed || b.dashed)
+        {
+            cloneMovement.dashEffect.Play();
+            recording[replayIndex] = new CloneFrame(a.position, a.rotation, a.time, a.attacked, false);
+            recording[replayIndex + 1] = new CloneFrame(b.position, b.rotation, b.time, b.attacked, false);
+        }
+
+
         if (recordingTime >= recording[recording.Count - 1].time)
         {
             transform.position = recording[recording.Count - 1].position;
@@ -90,18 +121,21 @@ public class CloneObject : MonoBehaviour
 }
 
 
-
 [System.Serializable]
 public struct CloneFrame
 {
     public Vector3 position;
     public Quaternion rotation;
     public float time;
+    public bool attacked;
+    public bool dashed;
 
-    public CloneFrame(Vector3 position, Quaternion rotation, float time)
+    public CloneFrame(Vector3 position, Quaternion rotation, float time, bool attacked, bool dashed)
     {
         this.position = position;
         this.rotation = rotation;
         this.time = time;
+        this.attacked = attacked;
+        this.dashed = dashed;
     }
 }

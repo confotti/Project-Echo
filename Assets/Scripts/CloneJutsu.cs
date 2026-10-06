@@ -8,6 +8,12 @@ public class CloneJutsu : MonoBehaviour
     public bool CurrentlyCloning = false;
 
     private float cooldown;
+    private PlayerMovement cloneMovement;
+
+    private void Start()
+    {
+        cloneMovement = clone.GetComponent<PlayerMovement>();
+    }
 
     private void Update()
     {
@@ -28,6 +34,7 @@ public class CloneJutsu : MonoBehaviour
             clone.gameObject.SetActive(true);
 
             playerMovement.enabled = false;
+            cloneMovement.enabled = true;
 
             clone.StartRecording();
         }
@@ -39,6 +46,7 @@ public class CloneJutsu : MonoBehaviour
             clone.StopRecording();
 
             playerMovement.enabled = true;
+            cloneMovement.enabled = false;
 
             clone.StartReplay();
         }

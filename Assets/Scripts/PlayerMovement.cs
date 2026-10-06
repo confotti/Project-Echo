@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Collections;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -19,7 +20,12 @@ public class PlayerMovement : MonoBehaviour
     public ParticleSystem dashEffect;
 
     private bool attacking = false;
-    private float attackMoveSpeed = 2f; 
+    private float attackMoveSpeed = 2f;
+
+    //Clone stuff
+    [NonSerialized] public bool attackFrame = false;
+    [NonSerialized] public bool dashFrame = false;
+    
 
     private void Start()
     {
@@ -43,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
 
             rb.linearVelocity = dashDirection * dashSpeed;
             dashEffect.Play();
+
+            dashFrame = true;
         }
     } 
 
@@ -52,10 +60,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (context.started)
         {
-            animator.SetTrigger("Attacking");
-            rb.linearVelocity = transform.forward * attackMoveSpeed;
+            Attack();
+
+            attackFrame = true;
         }
     } 
+
+    public void Attack()
+    {
+        animator.SetTrigger("Attacking");
+        rb.linearVelocity = transform.forward * attackMoveSpeed;
+    }
+
 
     private void Update()
     {
