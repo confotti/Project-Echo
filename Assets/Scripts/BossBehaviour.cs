@@ -4,6 +4,9 @@ using System.Collections;
 public class BossBehaviour : MonoBehaviour
 {
     public Transform player;
+    public Transform clone;
+    public Transform cloneTarget;
+
     public float health;
     public float damagePerHit;
     private float currentHealth; 
@@ -22,11 +25,22 @@ public class BossBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (player != null)
+        if (player == null)
+        {
+            return;
+        }
+
+        CloneObject cloneObject = clone.GetComponent<CloneObject>();
+
+        if (cloneObject != null && cloneObject.IsCloneActive)
+        {
+            transform.LookAt(cloneTarget);
+        }
+        else
         {
             transform.LookAt(player);
         }
-    }
+    } 
 
     private void OnTriggerEnter(Collider other)
     {

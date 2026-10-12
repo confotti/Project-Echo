@@ -12,6 +12,7 @@ public class CloneObject : MonoBehaviour
     public CameraFollow cameraFollow;
     private Transform ogCameraTarget;
 
+    public bool IsCloneActive => isRecording || isReplaying; 
     private bool isRecording;
     private bool isReplaying;
 
