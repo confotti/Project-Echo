@@ -27,7 +27,7 @@ Material:
     m_Floats:
     - _DepthThreshold: 1
     - _EdgeStrength: 1
-    - _NormalThreshold: 0.01
+    - _NormalThreshold: 0.8
     - _OutlineThickness: 0.5
     m_Colors:
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
