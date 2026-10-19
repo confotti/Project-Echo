@@ -39,7 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorThrshold: 1
-    - _NormalThrshold: 1
+    - _NormalThrshold: 0.5
     - _OVERLAY: 1
     m_Colors:
     - _OutLineColor: {r: 0, g: 0, b: 0, a: 0}
