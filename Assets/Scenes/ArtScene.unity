@@ -531,7 +531,7 @@ GameObject:
   - component: {fileID: 44961961}
   - component: {fileID: 44961965}
   - component: {fileID: 44961964}
-  - component: {fileID: 44961963}
+  - component: {fileID: 44961966}
   - component: {fileID: 44961962}
   m_Layer: 0
   m_Name: Boss
@@ -582,26 +582,6 @@ CapsuleCollider:
   m_Height: 1.9999999
   m_Direction: 1
   m_Center: {x: 0.0000009536743, y: -0.4, z: 0}
---- !u!114 &44961963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 44961960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d43c38d347d9f242bd24c3879c6fcc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BossBehaviour
-  player: {fileID: 2090724088}
-  clone: {fileID: 318436130}
-  cloneTarget: {fileID: 2119907309}
-  health: 50
-  damagePerHit: 10
-  hitMaterial: {fileID: 2100000, guid: bc30d93eb56c72c4a8c5790ce3c056d5, type: 2}
-  enemy: {fileID: 44961960}
-  deathvfx: {fileID: 999271918}
 --- !u!23 &44961964
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -659,6 +639,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44961960}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &44961966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44961960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34233937cc380e24dbf7c2ef1c8fc4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoveableEnemy
+  player: {fileID: 2090724088}
+  clone: {fileID: 318436130}
+  cloneTarget: {fileID: 2119907309}
+  detectionRange: 20
+  moveSpeed: 3
+  canMove: 0
+  health: 50
+  damagePerHit: 10
+  crystalShieldReset: {fileID: 1610631102}
+  hitMaterial: {fileID: 2100000, guid: bc30d93eb56c72c4a8c5790ce3c056d5, type: 2}
+  enemy: {fileID: 44961960}
+  deathvfx: {fileID: 999271918}
 --- !u!1001 &57092387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108291,6 +108295,7 @@ MonoBehaviour:
   cloneTarget: {fileID: 2119907309}
   detectionRange: 20
   moveSpeed: 3
+  canMove: 1
   health: 50
   damagePerHit: 10
   crystalShieldReset: {fileID: 1610631102}
@@ -137968,7 +137973,7 @@ GameObject:
   - component: {fileID: 1559051767}
   - component: {fileID: 1559051771}
   - component: {fileID: 1559051770}
-  - component: {fileID: 1559051769}
+  - component: {fileID: 1559051772}
   - component: {fileID: 1559051768}
   m_Layer: 0
   m_Name: Boss
@@ -138019,26 +138024,6 @@ CapsuleCollider:
   m_Height: 1.9999999
   m_Direction: 1
   m_Center: {x: 0.0000009536743, y: -0.4, z: 0}
---- !u!114 &1559051769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559051766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d43c38d347d9f242bd24c3879c6fcc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BossBehaviour
-  player: {fileID: 2090724088}
-  clone: {fileID: 318436130}
-  cloneTarget: {fileID: 2119907309}
-  health: 50
-  damagePerHit: 10
-  hitMaterial: {fileID: 2100000, guid: bc30d93eb56c72c4a8c5790ce3c056d5, type: 2}
-  enemy: {fileID: 1559051766}
-  deathvfx: {fileID: 903774692}
 --- !u!23 &1559051770
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -138096,6 +138081,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1559051766}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1559051772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559051766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34233937cc380e24dbf7c2ef1c8fc4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoveableEnemy
+  player: {fileID: 2090724088}
+  clone: {fileID: 318436130}
+  cloneTarget: {fileID: 2119907309}
+  detectionRange: 20
+  moveSpeed: 3
+  canMove: 0
+  health: 50
+  damagePerHit: 10
+  crystalShieldReset: {fileID: 1610631102}
+  hitMaterial: {fileID: 2100000, guid: bc30d93eb56c72c4a8c5790ce3c056d5, type: 2}
+  enemy: {fileID: 1559051766}
+  deathvfx: {fileID: 903774692}
 --- !u!1001 &1562356150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -144358,6 +144367,7 @@ MonoBehaviour:
   cloneTarget: {fileID: 2119907309}
   detectionRange: 20
   moveSpeed: 3
+  canMove: 1
   health: 50
   damagePerHit: 10
   crystalShieldReset: {fileID: 1610631102}
@@ -145305,6 +145315,7 @@ MonoBehaviour:
   cloneTarget: {fileID: 2119907309}
   detectionRange: 20
   moveSpeed: 3
+  canMove: 1
   health: 50
   damagePerHit: 10
   crystalShieldReset: {fileID: 1610631102}
