@@ -30,7 +30,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorRadius: 5
+    - _Contrast: 1.1
     - _EdgeWidth: 2
+    - _RedThreshold: 0.2
+    - _RedTolerance: 0.5
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -1,11 +1,11 @@
-Shader "Custom/ColorRestoration"
+
+Shader "Custom/ColorRestorationFullscreen"
 {
     Properties
     {
-        _BaseMap ("Base Map", 2D) = "white" {}
-        _BaseColor ("Base Color", Color) = (1,1,1,1)
-        _ColorRadius ("Color Radius", Float) = 5
-        _EdgeWidth ("Edge Width", Float) = 2
+        _RedThreshold ("Red Threshold", Range(0, 1)) = 0.2
+        _RedTolerance ("Red Tolerance", Range(0, 1)) = 0.25
+        _Contrast ("Grayscale Contrast", Range(0.5, 2)) = 1.5
     }
 
     SubShader
@@ -13,128 +13,90 @@ Shader "Custom/ColorRestoration"
         Tags
         {
             "RenderPipeline" = "UniversalPipeline"
-            "RenderType" = "Opaque"
-            "Queue" = "Geometry"
         }
 
         Pass
         {
-            Name "ForwardLit"
-            Tags { "LightMode" = "UniversalForward" }
+            Name "ColorRestoration"
+
+            ZWrite Off
+            ZTest Always
+            Cull Off
+            Blend Off
 
             HLSLPROGRAM
 
-            #pragma vertex vert
-            #pragma fragment frag
-
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-            #pragma multi_compile_fog
+            #pragma target 3.5
+            #pragma vertex Vert
+            #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
-
-            CBUFFER_START(UnityPerMaterial)
-                float4 _BaseMap_ST;
-                float4 _BaseColor;
-                float _ColorRadius;
-                float _EdgeWidth;
-            CBUFFER_END
+            #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             float4 _ColorSource;
+            float _ColorRadius;
+            float _EdgeWidth;
+            float _ColorAmount;
 
-            struct Attributes
+            float _RedThreshold;
+            float _RedTolerance;
+            float _Contrast;
+
+            half4 Frag(Varyings input) : SV_Target
             {
-                float4 positionOS : POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normalOS : NORMAL;
-            };
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-            struct Varyings
-            {
-                float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 positionWS : TEXCOORD1;
-                float3 normalWS : TEXCOORD2;
-                float fogCoord : TEXCOORD3;
-            };
+                float2 uv = input.texcoord;
+                half4 sceneColor = SAMPLE_TEXTURE2D_X(_BlitTexture,sampler_LinearClamp,uv);
 
-            Varyings vert(Attributes input)
-            {
-                Varyings output;
+                float3 color = sceneColor.rgb;
+                float redness = color.r - max(color.g, color.b);
 
-                VertexPositionInputs pos =
-                    GetVertexPositionInputs(input.positionOS.xyz);
+                float redMask = smoothstep(_RedThreshold,_RedThreshold + max(_RedTolerance, 0.001),redness);
 
-                output.positionCS = pos.positionCS;
-                output.positionWS = pos.positionWS;
-                output.normalWS =
-                    TransformObjectToWorldNormal(input.normalOS);
-
-                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
-                output.fogCoord = ComputeFogFactor(pos.positionCS.z);
-
-                return output;
-            }
-
-            half4 frag(Varyings input) : SV_Target
-            {
-                half4 baseColor =
-                    SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv)
-                    * _BaseColor;
-
-                float3 normalWS = normalize(input.normalWS);
-
-                // Basic main-light shading
-                Light mainLight = GetMainLight();
-
-                float NdotL = saturate(
-                    dot(normalWS, mainLight.direction)
-                );
-
-                float3 lighting =
-                    SampleSH(normalWS) +
-                    mainLight.color * NdotL;
-
-                float3 color = baseColor.rgb * lighting;
-
-                // Grayscale conversion
-                float gray = dot(
-                    color,
-                    float3(0.299, 0.587, 0.114)
-                );
+                float gray = dot(color,float3(0.299, 0.587, 0.114));
+                gray = saturate((gray - 0.5) * _Contrast + 0.5);
 
                 float3 grayscale = gray.xxx;
+                float3 grayWithRed = lerp(grayscale,color,redMask);
 
-                // Distance from the surface to the color source
-                float distanceToSource = distance(
-                    input.positionWS,
-                    _ColorSource.xyz
-                );
+                float rawDepth = SampleSceneDepth(uv);
 
-                // Restore color near the source
-                float edgeWidth = max(_EdgeWidth, 0.001);
+                #if UNITY_REVERSED_Z
+                    bool isSky = rawDepth <= 0.00001;
+                #else
+                    bool isSky = rawDepth >= 0.99999;
+                #endif
 
-                float colorMask = 1.0 - smoothstep(
-                    _ColorRadius - edgeWidth,
-                    _ColorRadius + edgeWidth,
-                    distanceToSource
-                );
+                if (isSky)
+                {
+                    float3 skyResult = lerp(grayWithRed,color,saturate(_ColorAmount));
 
-                float3 result = lerp(
-                    grayscale,
-                    color,
-                    colorMask
-                );
+                    return half4(skyResult, sceneColor.a);
+                }
 
-                result = MixFog(result, input.fogCoord);
+                #if !UNITY_REVERSED_Z
+                    rawDepth = lerp(UNITY_NEAR_CLIP_VALUE,1.0,rawDepth); 
+                #endif
 
-                return half4(result, baseColor.a);
+                float3 worldPosition = ComputeWorldSpacePosition(uv,rawDepth,UNITY_MATRIX_I_VP);
+                float distanceToPlayer = distance(worldPosition.xz,_ColorSource.xz);
+
+                float radius = max(_ColorRadius, 0.0);
+                float edge = max(_EdgeWidth, 0.001);
+                float colorMask = 0.0;
+
+                if (radius > 0.001)
+                {
+                    colorMask = 1.0 - smoothstep(max(radius - edge, 0.0),radius + edge,distanceToPlayer);
+                }
+
+                // Blend grayscale and original color using the radius.
+                float3 worldResult = lerp(grayWithRed,color,colorMask);
+
+                return half4(worldResult, sceneColor.a);
             }
-
             ENDHLSL
         }
     }

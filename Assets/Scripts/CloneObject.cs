@@ -12,9 +12,8 @@ public class CloneObject : MonoBehaviour
 
     private Transform ogCameraTarget;
 
-    [Header("Fullscreen Pass Effect")]
-    [SerializeField] private UniversalRendererData rendererData;
-    [SerializeField] private string fullscreenPassFeatureName = "Grey Red";
+    [Header("Color Transition")]
+    [SerializeField] private ColorRestorationController colorController;
 
     public bool IsRecording => isRecording;
     public bool IsReplaying => isReplaying;
@@ -22,7 +21,6 @@ public class CloneObject : MonoBehaviour
 
     private bool isRecording;
     private bool isReplaying;
-    private ScriptableRendererFeature fullscreenPassFeature;
 
     private float recordingTime;
     private int replayIndex;
@@ -34,40 +32,6 @@ public class CloneObject : MonoBehaviour
 
         if (cameraFollow != null)
             ogCameraTarget = cameraFollow.target;
-
-        FindFullscreenFeature();
-
-        SetFullscreenEffect(false);
-    }
-
-    private bool FindFullscreenFeature()
-    {
-        if (fullscreenPassFeature != null)
-            return true;
-
-        if (rendererData == null)
-        {
-            return false;
-        }
-
-        foreach (ScriptableRendererFeature feature in rendererData.rendererFeatures)
-        {
-            if (feature != null && feature.name == fullscreenPassFeatureName)
-            {
-                fullscreenPassFeature = feature;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void SetFullscreenEffect(bool enabled)
-    {
-        if (!FindFullscreenFeature())
-            return;
-
-        fullscreenPassFeature.SetActive(enabled);
     }
 
     public void StartRecording()
@@ -79,7 +43,11 @@ public class CloneObject : MonoBehaviour
         SwordCollider.layer = 6;
         SwordCollider.tag = "Untagged";
 
-        SetFullscreenEffect(true);
+        if (colorController != null)
+        {
+            colorController.enabled = true;
+            colorController.EnterCloneMode();
+        }
 
         if (cameraFollow != null)
             cameraFollow.target = transform;
@@ -89,9 +57,11 @@ public class CloneObject : MonoBehaviour
     {
         isRecording = false;
 
-        SetFullscreenEffect(false);
+        if (colorController != null)
+            colorController.ExitCloneMode();
 
-        cameraFollow.target = ogCameraTarget;
+        if (cameraFollow != null)
+            cameraFollow.target = ogCameraTarget;
     }
 
     public void StartReplay()
@@ -100,14 +70,10 @@ public class CloneObject : MonoBehaviour
         isReplaying = true;
         replayIndex = 0;
         recordingTime = 0f;
-
         SwordCollider.layer = 0;
         SwordCollider.tag = "Sword";
 
-        SetFullscreenEffect(false);
-
-        if (cameraFollow != null)
-            cameraFollow.target = ogCameraTarget;
+        cameraFollow.target = ogCameraTarget;
     }
 
     private void Update()
@@ -139,15 +105,13 @@ public class CloneObject : MonoBehaviour
     {
         if (recording.Count < 2)
         {
-            isReplaying = false;
+            FinishReplay();
             return;
         }
 
         recordingTime += Time.deltaTime;
 
-        // Find the two recorded frames surrounding replay time.
-        while (replayIndex < recording.Count - 2 &&
-               recording[replayIndex + 1].time < recordingTime)
+        while (replayIndex < recording.Count - 2 && recording[replayIndex + 1].time < recordingTime)
         {
             replayIndex++;
         }
@@ -161,7 +125,7 @@ public class CloneObject : MonoBehaviour
         transform.position = Vector3.Lerp(a.position, b.position, t);
         transform.rotation = Quaternion.Slerp(a.rotation, b.rotation, t);
 
-        //Lite hemskt, men det får va så nu, om det funkar
+        //Lite hemskt, men det fÃ¥r va sÃ¥ nu, om det funkar
         if (a.attacked || b.attacked)
         {
             cloneMovement.Attack();
@@ -183,17 +147,25 @@ public class CloneObject : MonoBehaviour
         {
             transform.position = recording[recording.Count - 1].position;
             transform.rotation = recording[recording.Count - 1].rotation;
-            isReplaying = false;
 
-            SetFullscreenEffect(false);
-            gameObject.SetActive(false);
+            FinishReplay();
         }
+    }
+
+    private void FinishReplay()
+    {
+        if (!isReplaying)
+            return;
+
+        isReplaying = false;
+
+        gameObject.SetActive(false);
     }
 
     private void OnDisable()
     {
         isRecording = false;
-        SetFullscreenEffect(false);
+        isReplaying = false;
 
         if (cameraFollow != null && ogCameraTarget != null)
             cameraFollow.target = ogCameraTarget;
@@ -204,14 +176,14 @@ public class CloneObject : MonoBehaviour
         isRecording = false;
         isReplaying = false;
 
-        SetFullscreenEffect(false);
+        if (colorController != null)
+            colorController.ExitCloneMode();
 
         if (cameraFollow != null && ogCameraTarget != null)
             cameraFollow.target = ogCameraTarget;
 
         gameObject.SetActive(false);
     }
-
 }
 
 [System.Serializable]

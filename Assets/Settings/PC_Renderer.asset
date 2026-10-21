@@ -60,6 +60,26 @@ MonoBehaviour:
       restoreCamera: 1
       offset: {x: 0, y: 0, z: 0, w: 0}
       cameraFieldOfView: 60
+--- !u!114 &-4747693214580557408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: ColorRestore
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Active: 1
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: 7
+  passMaterial: {fileID: 2100000, guid: 96efa33f03004fa4e92591cc7b520ad3, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &-100095006691374005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
   m_Name: Posterize
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
-  m_Active: 0
+  m_Active: 1
   injectionPoint: 550
   fetchColorBuffer: 1
   requirements: 4
@@ -111,7 +131,8 @@ MonoBehaviour:
   - {fileID: 3606834624955656647}
   - {fileID: 5689434044232580551}
   - {fileID: -6503136643095259818}
-  m_RendererFeatureMap: ad6b866f10d7b46c4bcc5e2a1f649cfe1b6dea0a688118b3c7a90f48fb0c0e32c73d7f8b1eeef44e56157b9ead37c0a5
+  - {fileID: -4747693214580557408}
+  m_RendererFeatureMap: ad6b866f10d7b46c4bcc5e2a1f649cfe1b6dea0a688118b3c7a90f48fb0c0e32c73d7f8b1eeef44e56157b9ead37c0a5a0b964fa2cce1cbe
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
