@@ -281,6 +281,7 @@ Material:
     - _Ior: 1.5
     - _IridescenceMask: 1
     - _IridescenceThickness: 1
+    - _LightIntensity: 1
     - _LinkDetailsWithBase: 1
     - _MaterialID: 1
     - _Metallic: 0
@@ -308,8 +309,8 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
-    - _Rim_Light_Brightness: 1
-    - _Rim_Power: 20
+    - _Rim_Light_Brightness: 40
+    - _Rim_Power: 5
     - _Smoothness: 0.35
     - _SmoothnessRemapMax: 0.7449392
     - _SmoothnessRemapMin: 0
@@ -369,6 +370,7 @@ Material:
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _OverlayColor: {r: 0, g: 0, b: 0, a: 0}
+    - _Rim_Color: {r: 0.08960724, g: 0, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}

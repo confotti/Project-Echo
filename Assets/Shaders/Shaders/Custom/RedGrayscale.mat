@@ -25,6 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _Contrast: 1.1
     - _RedThreshold: 0.2
     - _RedTolerance: 0.25
     m_Colors: []

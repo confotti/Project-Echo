@@ -4,6 +4,7 @@ Shader "Oxysoft/RedGrayscale"
     {
         _RedThreshold ("Red Threshold", Range(0, 1)) = 0.2
         _RedTolerance ("Red Tolerance", Range(0, 1)) = 0.25
+        _Contrast ("Grayscale Contrast", Range(0.5, 3)) = 1.5
     }
 
     SubShader
@@ -28,6 +29,7 @@ Shader "Oxysoft/RedGrayscale"
 
             float _RedThreshold;
             float _RedTolerance;
+            float _Contrast;
 
             half4 Frag(Varyings input) : SV_Target
             {
@@ -45,6 +47,9 @@ Shader "Oxysoft/RedGrayscale"
                     float3(0.299, 0.587, 0.114)
                 );
 
+                // Increase contrast around middle gray.
+                grayscale = saturate((grayscale - 0.5) * _Contrast + 0.5);
+
                 float3 grayColor = grayscale.xxx;
 
                 // Detect red: red must be strong and dominate green/blue.
@@ -56,6 +61,7 @@ Shader "Oxysoft/RedGrayscale"
                     redness
                 );
 
+                // Keep red objects colored; apply contrast only to grayscale.
                 float3 finalColor = lerp(
                     grayColor,
                     color,

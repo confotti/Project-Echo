@@ -4,7 +4,7 @@ in float ToonRampOffset, out float3 ToonRampOutput, out float3 Direction)
 
 	// set the shader graph node previews
 	#ifdef SHADERGRAPH_PREVIEW
-		ToonRampOutput = float3(0.5,0.5,0);
+		ToonRampOutput = float3(0,0,0);
 		Direction = float3(0.5,0.5,0);
 	#else
 
