@@ -32,7 +32,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -98,7 +98,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal:
-        m_Texture: {fileID: 2800000, guid: fd76a92a4d04d964b84db91d0efa1aaa, type: 3}
+        m_Texture: {fileID: 2800000, guid: bcfdfe2f7f87feb4c9029994b4a60e87, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
@@ -156,7 +156,7 @@ Material:
     - _ATDistance: 1
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
-    - _AlphaClip: 0.25
+    - _AlphaClip: 1
     - _AlphaCutoff: 0.5
     - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
@@ -166,11 +166,16 @@ Material:
     - _AlphaRemapMax: 0.99999994
     - _AlphaRemapMin: 0
     - _AlphaSrcBlend: 1
+    - _AlphaToMask: 1
     - _Anisotropy: 0
     - _BendStrength: 1
+    - _Blend: 0
     - _BlendMode: 0
+    - _BlendModePreserveSpecular: 1
+    - _CastShadows: 0
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
+    - _Cull: 0
     - _CullMode: 0
     - _CullModeForward: 0
     - _Cutoff: 0.5
@@ -188,6 +193,7 @@ Material:
     - _DoubleSidedNormalMode: 1
     - _DstBlend: 0
     - _DstBlend2: 0
+    - _DstBlendAlpha: 0
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -234,6 +240,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RayTracing: 0
+    - _ReceiveShadows: 1
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
@@ -246,6 +253,7 @@ Material:
     - _SpecularAAThreshold: 0.2
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
     - _StencilRef: 0
     - _StencilRefDepth: 8
     - _StencilRefDistortionVec: 4
@@ -259,6 +267,7 @@ Material:
     - _Strength: 1.4
     - _SubsurfaceMask: 1
     - _SupportDecals: 1
+    - _Surface: 0
     - _SurfaceType: 0
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
@@ -281,10 +290,13 @@ Material:
     - _UseShadowThreshold: 0
     - _VerticleBendStrength: -1
     - _WindSpeed: 0.2
+    - _WorkflowMode: 1
+    - _ZTest: 4
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 0.77254903, b: 0, a: 1}

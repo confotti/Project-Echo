@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
 
     private bool dashing = false;
-    private float dashSpeed = 40f;
+    private float dashSpeed = 24f;
     private float dashDecaySpeed = 64f;
     public ParticleSystem dashEffect;
 
@@ -89,6 +89,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         movePlayer();
+    }
+
+    private void FixedUpdate()
+    {
         dashPlayer();
     }
 
