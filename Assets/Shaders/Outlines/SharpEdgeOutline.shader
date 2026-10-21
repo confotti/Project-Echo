@@ -1,3 +1,4 @@
+
 Shader "Custom/SharpEdgeOutline"
 {
     Properties
@@ -16,11 +17,14 @@ Shader "Custom/SharpEdgeOutline"
         Pass
         {
             Name "SharpEdgeOutline"
+
             ZWrite Off
             ZTest Always
             Cull Off
+            Blend Off
 
             HLSLPROGRAM
+
             #pragma vertex Vert
             #pragma fragment Frag
 
@@ -57,11 +61,16 @@ Shader "Custom/SharpEdgeOutline"
 
             float GetMask(float2 uv)
             {
-                return SAMPLE_TEXTURE2D_X(
-                    _DefaultLayerMask,
-                    sampler_DefaultLayerMask,
-                    saturate(uv)
-                ).r;
+                return SAMPLE_TEXTURE2D_X(_DefaultLayerMask,sampler_DefaultLayerMask,saturate(uv)).r;
+            }
+
+            bool IsSky(float rawDepth)
+            {
+                #if UNITY_REVERSED_Z
+                    return rawDepth <= 0.00001;
+                #else
+                    return rawDepth >= 0.99999;
+                #endif
             }
 
             half4 Frag(Varyings input) : SV_Target
@@ -69,36 +78,28 @@ Shader "Custom/SharpEdgeOutline"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
                 float2 uv = input.texcoord;
-
-                half4 sceneColor = SAMPLE_TEXTURE2D_X(
-                    _BlitTexture,
-                    sampler_LinearClamp,
-                    uv
-                );
+                half4 sceneColor = SAMPLE_TEXTURE2D_X(_BlitTexture,sampler_LinearClamp,uv);
 
                 if (_EdgeStrength <= 0.0)
                     return sceneColor;
 
+                // Only outline pixels belonging to the selected layer.
                 float centerMask = GetMask(uv);
 
-                // Only draw outlines on selected-layer pixels.
                 if (centerMask < 0.5)
                     return sceneColor;
 
-                float2 texel = _BlitTexture_TexelSize.xy * _OutlineThickness;
                 float rawCenter = GetRawDepth(uv);
 
-                #if UNITY_REVERSED_Z
-                    bool centerIsSky = rawCenter <= 0.00001;
-                #else
-                    bool centerIsSky = rawCenter >= 0.99999;
-                #endif
-
-                if (centerIsSky)
+                if (IsSky(rawCenter))
                     return sceneColor;
 
-                float depthCenter = GetLinearDepth(rawCenter);
-                float3 normalCenter = GetNormal(uv);
+                float centerDepth = GetLinearDepth(rawCenter);
+                float3 centerNormal = GetNormal(uv);
+
+                float2 texel = abs(_BlitTexture_TexelSize.xy)
+                    * max(_OutlineThickness, 0.5);
+
                 float normalEdge = 0.0;
                 float depthEdge = 0.0;
 
@@ -107,50 +108,53 @@ Shader "Custom/SharpEdgeOutline"
                     float2(texel.x, 0),
                     float2(-texel.x, 0),
                     float2(0, texel.y),
-                    float2(0, -texel.y)
-                };
+                    float2(0, -texel.y)};
 
                 for (int i = 0; i < 4; i++)
                 {
                     float2 sampleUV = saturate(uv + offsets[i]);
+
+                    // Selected-layer boundary.
                     float sampleMask = GetMask(sampleUV);
 
-                    // Detect the boundary of selected-layer objects.
                     if (sampleMask < 0.5)
                     {
-                        depthEdge = max(depthEdge, 1.0);
+                        depthEdge = 1.0;
                         continue;
                     }
 
                     float rawSample = GetRawDepth(sampleUV);
 
-                    #if UNITY_REVERSED_Z
-                        bool sampleIsSky = rawSample <= 0.00001;
-                    #else
-                        bool sampleIsSky = rawSample >= 0.99999;
-                    #endif
-
-                    if (sampleIsSky)
+                    if (IsSky(rawSample))
                     {
-                        depthEdge = max(depthEdge, 1.0);
+                        depthEdge = 1.0;
                         continue;
                     }
 
                     float sampleDepth = GetLinearDepth(rawSample);
                     float3 sampleNormal = GetNormal(sampleUV);
 
-                    float normalDifference = 1.0 - saturate(dot(normalCenter, sampleNormal));
-                    float depthDifference = abs(depthCenter - sampleDepth) / max(min(depthCenter, sampleDepth), 0.01);
+                    // Relative depth difference is less dependent
+                    // on the object's distance from the camera.
+                    float depthDifference =
+                        abs(centerDepth - sampleDepth)
+                        / max(min(centerDepth, sampleDepth), 0.01);
 
-                    normalEdge = max(normalEdge, normalDifference);
+                    float normalDifference =
+                        1.0 - saturate(dot(centerNormal, sampleNormal));
+
                     depthEdge = max(depthEdge, depthDifference);
+                    normalEdge = max(normalEdge, normalDifference);
                 }
 
-                float normalOutline = smoothstep(_NormalThreshold, _NormalThreshold + 0.1, normalEdge);
-                float depthOutline = smoothstep(_DepthThreshold, _DepthThreshold * 2.0, depthEdge);
-                float edge = max(normalOutline, depthOutline) * _EdgeStrength;
+                float normalOutline = smoothstep(_NormalThreshold,_NormalThreshold + 0.1,normalEdge);
 
-                return lerp(sceneColor, _OutlineColor, saturate(edge));
+                float depthOutline = smoothstep(_DepthThreshold,_DepthThreshold * 2.0,depthEdge);
+
+                float edge = saturate(
+                    max(normalOutline, depthOutline) * _EdgeStrength);
+
+                return lerp(sceneColor, _OutlineColor, edge);
             }
             ENDHLSL
         }
