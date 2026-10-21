@@ -138990,6 +138990,10 @@ MonoBehaviour:
   bossButton: {fileID: 1943225815}
   shieldMaterialIndex: 1
   shieldMaterial: {fileID: 2100000, guid: eac88afe9764eff4c80f1c1f4c94446e, type: 2}
+  enemies:
+  - {fileID: 1143221675}
+  - {fileID: 1633100964}
+  - {fileID: 1670075377}
   crystalsRequired: 3
   shurikenEffect: {fileID: 1950634401}
 --- !u!4 &1610631103
@@ -163181,7 +163185,7 @@ GameObject:
   - component: {fileID: 1943225811}
   - component: {fileID: 1943225816}
   m_Layer: 8
-  m_Name: Button (2)
+  m_Name: BossButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

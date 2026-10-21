@@ -77,8 +77,7 @@ public class MoveableEnemy : MonoBehaviour
             return;
 
         // odödlig pga krystall vid liv
-        if (crystalShieldReset != null &&
-            crystalShieldReset.AreCrystalsRemaining)
+        if (crystalShieldReset != null && crystalShieldReset.AreCrystalsRemaining && canMove)
         {
             return;
         }
@@ -94,7 +93,26 @@ public class MoveableEnemy : MonoBehaviour
             }
         }
         TakeDamage();
-    } 
+    }
+
+    public void RemoveShieldMaterial()
+    {
+        MeshRenderer meshRenderer = enemy.GetComponent<MeshRenderer>();
+        Material[] materials = meshRenderer.materials;
+
+        if (materials.Length > 1)
+        {
+            Material[] newMaterials = new Material[materials.Length - 1];
+
+            newMaterials[0] = materials[0];
+
+            for (int i = 2; i < materials.Length; i++)
+            {
+                newMaterials[i - 1] = materials[i];
+            }
+            meshRenderer.materials = newMaterials;
+        }
+    }
 
     IEnumerator HitDuration()
     {
