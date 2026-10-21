@@ -5,6 +5,7 @@ public class HitObject : MonoBehaviour
 {
     public Material hitMaterial;
     public GameObject button;
+    public AudioSource sound; 
 
     public bool isHit = false;
     private Material originalMaterial;
@@ -21,6 +22,7 @@ public class HitObject : MonoBehaviour
             isHit = true;
             button.GetComponent<MeshRenderer>().material = hitMaterial;
             StartCoroutine(HitDuration());
+            sound.Play(); 
             Debug.Log("Player hit");
         }
     }

@@ -99,6 +99,32 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 movement = new Vector3(move.x, 0f, move.y);
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
+    }
+
+    public void SetMovementEnabled(bool state)
+    {
+        enabled = state;
+
+        if (!state)
+        {
+            move = Vector2.zero;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            dashing = false;
+            attacking = false;
+        }
+    }
+
+
+    public void RespawnAt(Vector3 position, Quaternion rotation)
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        dashing = false;
+        attacking = false;
+
+        transform.SetPositionAndRotation(position, rotation);
     } 
 
     public void dashPlayer()
