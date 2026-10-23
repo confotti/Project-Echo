@@ -6,8 +6,10 @@ public class CloneJutsu : MonoBehaviour
     public PlayerMovement playerMovement;
 
     public bool CurrentlyCloning = false;
+    public float maxRecordingDuration = 6f; 
 
     private float cooldown;
+    private float recordingTimer; 
     private PlayerMovement cloneMovement;
 
     private void Start()
@@ -18,7 +20,17 @@ public class CloneJutsu : MonoBehaviour
     private void Update()
     {
         cooldown -= Time.deltaTime;
-    }
+
+        if (CurrentlyCloning)
+        {
+            recordingTimer += Time.deltaTime;
+
+            if (recordingTimer >= maxRecordingDuration)
+            {
+                EndCloning();
+            }
+        }
+    } 
 
     public void OnClonePressed()
     {
@@ -27,6 +39,7 @@ public class CloneJutsu : MonoBehaviour
         if (!CurrentlyCloning)
         {
             CurrentlyCloning = true;
+            recordingTimer = 0f; 
 
             clone.transform.position = transform.position;
             clone.transform.rotation = transform.rotation;
@@ -41,16 +54,24 @@ public class CloneJutsu : MonoBehaviour
 
         else
         {
-            CurrentlyCloning = false;
-
-            clone.StopRecording();
-
-            playerMovement.enabled = true;
-            cloneMovement.enabled = false;
-
-            clone.StartReplay();
+            EndCloning();
         }
 
         cooldown = 0.2f;
     }
+
+    private void EndCloning()
+    {
+        if (!CurrentlyCloning)
+            return;
+
+        CurrentlyCloning = false;
+
+        clone.StopRecording();
+
+        playerMovement.enabled = true;
+        cloneMovement.enabled = false;
+
+        clone.StartReplay();
+    } 
 }

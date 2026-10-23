@@ -35,6 +35,7 @@ Shader "Custom/ColorRestorationFullscreen"
 			#include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 			// tillåter dig att nå kamerans scene depth texture
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl" 
 
             float4 _ColorSource; //Pos av spelaren i world space, supplied by the controller 
             float _ColorRadius; //nuvarnade radius, animerad av the controller 
@@ -124,6 +125,8 @@ Shader "Custom/ColorRestorationFullscreen"
 
                 outlineMask *= step(0.001, radius);
 
+				float3 surfaceNormal = normalize(SampleSceneNormals(uv));
+				outlineMask *= step(0.7, surfaceNormal.y); 
                 worldResult = lerp(worldResult,_OutlineColor.rgb,outlineMask * _OutlineColor.a);
                 //return the final pixel color, preserve the original scene alpha 
 				return half4(worldResult, sceneColor.a); 
