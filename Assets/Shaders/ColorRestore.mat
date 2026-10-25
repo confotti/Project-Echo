@@ -30,13 +30,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorRadius: 5
-    - _Contrast: 1
+    - _Contrast: 1.05
     - _EdgeFrequency: 4
     - _EdgeIrregularity: 0.5
     - _EdgeWidth: 2
     - _OutlineWidth: 0.1
     - _RedThreshold: 0.2
-    - _RedTolerance: 0.5
+    - _RedTolerance: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
