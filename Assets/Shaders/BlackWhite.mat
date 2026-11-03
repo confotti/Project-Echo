@@ -64,7 +64,7 @@ Material:
     m_Colors:
     - _MainColor: {r: 1, g: 1, b: 1, a: 0}
     - _ShadowColor: {r: 0.018306782, g: 0.015686277, b: 0.039215688, a: 1}
-    - _SubShadowColor: {r: 0.13758332, g: 0.12802598, b: 0.1981132, a: 1}
+    - _SubShadowColor: {r: 0.33918753, g: 0.3226237, b: 0.4716981, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &4050134744565806493

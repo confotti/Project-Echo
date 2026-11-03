@@ -3,7 +3,7 @@ Shader "Custom/ColorRestorationFullscreen"
     Properties //values som kan sättas i inspektorn
     {
         _RedThreshold ("Red Threshold", Range(0, 1)) = 0.2
-        _RedTolerance ("Red Tolerance", Range(0, 1)) = 0.25
+        _RedTolerance ("Red Tolerance", Range(0, 2)) = 0.25
         _Contrast ("Grayscale Contrast", Range(0.5, 2)) = 1.5
     }
 
